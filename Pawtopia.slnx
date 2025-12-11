@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Pawtopia.Client/Pawtopia.Client.csproj" />
+  <Project Path="Pawtopia/Pawtopia.csproj" />
+</Solution>
