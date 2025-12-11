@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using Pawtopia.Components.Account.Pages;
 using Pawtopia.Components.Account.Pages.Manage;
-using Pawtopia.Data;
+using Pawtopia.Models;
 
 namespace Microsoft.AspNetCore.Routing
 {

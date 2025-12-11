@@ -5,6 +5,7 @@ using Pawtopia.Client.Pages;
 using Pawtopia.Components;
 using Pawtopia.Components.Account;
 using Pawtopia.Data;
+using Pawtopia.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 

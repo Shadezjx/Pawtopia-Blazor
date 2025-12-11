@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using Pawtopia.Data;
+using Pawtopia.Models;
 
 namespace Pawtopia.Components.Account
 {
