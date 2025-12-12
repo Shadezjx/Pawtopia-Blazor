@@ -11,7 +11,7 @@ using Pawtopia.Data;
 namespace Pawtopia.Migrations
 {
     [DbContext(typeof(PawtopiaDbContext))]
-    [Migration("20251212140144_InitialCreate")]
+    [Migration("20251212145919_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -612,7 +612,7 @@ namespace Pawtopia.Migrations
             modelBuilder.Entity("Pawtopia.Models.Address", b =>
                 {
                     b.HasOne("Pawtopia.Models.User", "User")
-                        .WithMany()
+                        .WithMany("Addresses")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -732,6 +732,8 @@ namespace Pawtopia.Migrations
 
             modelBuilder.Entity("Pawtopia.Models.User", b =>
                 {
+                    b.Navigation("Addresses");
+
                     b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618
