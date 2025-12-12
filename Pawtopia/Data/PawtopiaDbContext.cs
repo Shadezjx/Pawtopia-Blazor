@@ -57,7 +57,7 @@ namespace Pawtopia.Data
                     Id = customerRoleId,
                     ConcurrencyStamp = customerRoleId,
                     Name = "Customer",
-                    NormalizedName = "Customer"
+                    NormalizedName = "CUSTOMER"
                 }
             );
         }
