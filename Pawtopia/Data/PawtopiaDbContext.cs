@@ -23,16 +23,21 @@ namespace Pawtopia.Data
             base.OnModelCreating(builder);
 
             // ---
-            // Customize the ASP.NET Identity models
+            // Renaming Identity tables
             // ---
 
             builder.Entity<User>().ToTable("Users");
             builder.Entity<IdentityRole>().ToTable("Roles");
+            builder.Entity<IdentityUserRole<string>>().ToTable("UserRoles");
             builder.Entity<IdentityUserClaim<string>>().ToTable("UserClaims");
             builder.Entity<IdentityRoleClaim<string>>().ToTable("RoleClaims");
             builder.Entity<IdentityUserLogin<string>>().ToTable("Logins");
             builder.Entity<IdentityUserToken<string>>().ToTable("Tokens");
             builder.Entity<IdentityUserPasskey<string>>().ToTable("Passkeys");
+
+            // ---
+            // Configuration navigation properties for many-to-many relationships
+            // ---
 
             builder.Entity<User>()
                 .HasMany(user => user.Roles)
@@ -47,11 +52,11 @@ namespace Pawtopia.Data
                         .HasOne<User>()
                         .WithMany(user => user.UserRoles)
                         .HasForeignKey(userRole => userRole.UserId)
-                        .IsRequired(),
-                    userRole => userRole.ToTable("UserRoles"));
+                        .IsRequired()
+                );
 
             // ---
-            // Additional application models
+            // Additional application configurations
             // ---
 
             // Seed roles
@@ -59,10 +64,11 @@ namespace Pawtopia.Data
             var customerRoleId = "customer-role";
 
             builder.Entity<IdentityRole>().HasData(
-                new IdentityRole { 
+                new IdentityRole
+                {
                     Id = adminRoleId,
                     ConcurrencyStamp = adminRoleId,
-                    Name = "Admin", 
+                    Name = "Admin",
                     NormalizedName = "ADMIN"
                 },
                 new IdentityRole

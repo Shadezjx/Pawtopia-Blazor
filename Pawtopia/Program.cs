@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Pawtopia.Client.Pages;
 using Pawtopia.Components;
 using Pawtopia.Components.Account;
 using Pawtopia.Data;
