@@ -40,6 +40,26 @@ namespace Pawtopia.Data
             // ---
             // Additional application models
             // ---
+
+            // Seed roles
+            var adminRoleId = "admin-role";
+            var customerRoleId = "customer-role";
+
+            builder.Entity<IdentityRole>().HasData(
+                new IdentityRole { 
+                    Id = adminRoleId,
+                    ConcurrencyStamp = adminRoleId,
+                    Name = "Admin", 
+                    NormalizedName = "ADMIN"
+                },
+                new IdentityRole
+                {
+                    Id = customerRoleId,
+                    ConcurrencyStamp = customerRoleId,
+                    Name = "Customer",
+                    NormalizedName = "Customer"
+                }
+            );
         }
 
         public DbSet<Address> Addresses { get; set; } = null!;
