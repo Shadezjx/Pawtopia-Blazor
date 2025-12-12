@@ -11,8 +11,8 @@ using Pawtopia.Data;
 namespace Pawtopia.Migrations
 {
     [DbContext(typeof(PawtopiaDbContext))]
-    [Migration("20251212085945_SeedRoles")]
-    partial class SeedRoles
+    [Migration("20251212140144_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -58,7 +58,7 @@ namespace Pawtopia.Migrations
                             Id = "customer-role",
                             ConcurrencyStamp = "customer-role",
                             Name = "Customer",
-                            NormalizedName = "Customer"
+                            NormalizedName = "CUSTOMER"
                         });
                 });
 
@@ -594,7 +594,7 @@ namespace Pawtopia.Migrations
                         .IsRequired();
 
                     b.HasOne("Pawtopia.Models.User", null)
-                        .WithMany()
+                        .WithMany("UserRoles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -728,6 +728,11 @@ namespace Pawtopia.Migrations
                         .IsRequired();
 
                     b.Navigation("Variation");
+                });
+
+            modelBuilder.Entity("Pawtopia.Models.User", b =>
+                {
+                    b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618
         }

@@ -5,7 +5,7 @@
 namespace Pawtopia.Migrations
 {
     /// <inheritdoc />
-    public partial class DedicatedModelsFolder : Migration
+    public partial class RolesEfNavigation : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

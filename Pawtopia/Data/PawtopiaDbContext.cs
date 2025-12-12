@@ -34,8 +34,21 @@ namespace Pawtopia.Data
             builder.Entity<IdentityUserToken<string>>().ToTable("Tokens");
             builder.Entity<IdentityUserPasskey<string>>().ToTable("Passkeys");
 
-            // join table: user can have many roles, role can have many users
-            builder.Entity<IdentityUserRole<string>>().ToTable("UserRoles");
+            builder.Entity<User>()
+                .HasMany(user => user.Roles)
+                .WithMany()
+                .UsingEntity<IdentityUserRole<string>>(
+                    userRole => userRole
+                        .HasOne<IdentityRole>()
+                        .WithMany()
+                        .HasForeignKey(userRole => userRole.RoleId)
+                        .IsRequired(),
+                    userRole => userRole
+                        .HasOne<User>()
+                        .WithMany(user => user.UserRoles)
+                        .HasForeignKey(userRole => userRole.UserId)
+                        .IsRequired(),
+                    userRole => userRole.ToTable("UserRoles"));
 
             // ---
             // Additional application models

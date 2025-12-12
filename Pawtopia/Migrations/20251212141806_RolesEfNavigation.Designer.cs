@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Pawtopia.Data;
 
@@ -10,9 +11,11 @@ using Pawtopia.Data;
 namespace Pawtopia.Migrations
 {
     [DbContext(typeof(PawtopiaDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251212141806_RolesEfNavigation")]
+    partial class RolesEfNavigation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.1");
@@ -55,7 +58,7 @@ namespace Pawtopia.Migrations
                             Id = "customer-role",
                             ConcurrencyStamp = "customer-role",
                             Name = "Customer",
-                            NormalizedName = "Customer"
+                            NormalizedName = "CUSTOMER"
                         });
                 });
 
@@ -591,7 +594,7 @@ namespace Pawtopia.Migrations
                         .IsRequired();
 
                     b.HasOne("Pawtopia.Models.User", null)
-                        .WithMany()
+                        .WithMany("UserRoles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -725,6 +728,11 @@ namespace Pawtopia.Migrations
                         .IsRequired();
 
                     b.Navigation("Variation");
+                });
+
+            modelBuilder.Entity("Pawtopia.Models.User", b =>
+                {
+                    b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618
         }

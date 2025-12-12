@@ -6,5 +6,9 @@ namespace Pawtopia.Models
     {
         public string DisplayName { get; set; } = String.Empty;
         public string ProfileImageLink { get; set; } = String.Empty;
+
+        public ICollection<IdentityUserRole<string>> UserRoles { get; set; } = [];
+
+        public ICollection<IdentityRole> Roles { get; set; } = [];
     }
 }
