@@ -10,5 +10,7 @@ namespace Pawtopia.Models
         public ICollection<IdentityUserRole<string>> UserRoles { get; set; } = [];
 
         public ICollection<IdentityRole> Roles { get; set; } = [];
+
+        public ICollection<Address> Addresses { get; set; } = [];
     }
 }
