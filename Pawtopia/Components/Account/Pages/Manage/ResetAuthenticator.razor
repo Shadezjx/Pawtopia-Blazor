@@ -2,10 +2,9 @@
 
 @using Microsoft.AspNetCore.Identity
 @using Pawtopia.Data
-@using Pawtopia.Models
 
-@inject UserManager<User> UserManager
-@inject SignInManager<User> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
 @inject IdentityRedirectManager RedirectManager
 @inject ILogger<ResetAuthenticator> Logger
 

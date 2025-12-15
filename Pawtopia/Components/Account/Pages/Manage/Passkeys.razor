@@ -1,13 +1,12 @@
 ﻿@page "/Account/Manage/Passkeys"
 
-@using System.Buffers.Text
-@using System.ComponentModel.DataAnnotations
-@using Microsoft.AspNetCore.Identity
 @using Pawtopia.Data
-@using Pawtopia.Models
+@using Microsoft.AspNetCore.Identity
+@using System.ComponentModel.DataAnnotations
+@using System.Buffers.Text
 
-@inject UserManager<User> UserManager
-@inject SignInManager<User> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
 @inject IdentityRedirectManager RedirectManager
 
 <PageTitle>Manage your passkeys</PageTitle>
@@ -63,7 +62,7 @@ else
 @code {
     private const int MaxPasskeyCount = 100;
 
-    private User? user;
+    private ApplicationUser? user;
     private IList<UserPasskeyInfo>? currentPasskeys;
 
     [CascadingParameter]
