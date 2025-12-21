@@ -3,7 +3,6 @@ using Pawtopia.Models;
 
 namespace Pawtopia.Data
 {
-    // Kế thừa DbContext thường, không dùng IdentityDbContext nữa
     public class PawtopiaDbContext : DbContext
     {
         public PawtopiaDbContext(DbContextOptions<PawtopiaDbContext> options)
@@ -11,14 +10,36 @@ namespace Pawtopia.Data
         {
         }
 
-        // Khai báo bảng của riêng bạn ở đây
+        // --- KHAI BÁO CÁC BẢNG (DbSet) ---
+        // Phải có đủ các dòng này thì lệnh Migration mới nhận diện được thay đổi
         public DbSet<User> Users { get; set; }
+        public DbSet<Address> Addresses { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<ShoppingCart> ShoppingCarts { get; set; }
+        public DbSet<ShoppingCartItem> ShoppingCartItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Cấu hình bảng User của bạn (ví dụ đặt tên bảng là 'MyUsers')
-            modelBuilder.Entity<User>().ToTable("Users");
             base.OnModelCreating(modelBuilder);
+
+            // Cấu hình tên bảng thủ công (Nếu muốn khớp chính xác với SQLite hiện tại)
+            modelBuilder.Entity<User>().ToTable("Users");
+            modelBuilder.Entity<Address>().ToTable("Addresses");
+            modelBuilder.Entity<Category>().ToTable("Categories");
+            modelBuilder.Entity<Product>().ToTable("Products");
+            modelBuilder.Entity<Order>().ToTable("Orders");
+            modelBuilder.Entity<OrderItem>().ToTable("OrderItems");
+            modelBuilder.Entity<ShoppingCart>().ToTable("ShoppingCarts");
+            modelBuilder.Entity<ShoppingCartItem>().ToTable("ShoppingCartItems");
+
+            // Cấu hình mối quan hệ 1-N (Ví dụ: Một User có nhiều Address)
+            modelBuilder.Entity<Address>()
+                .HasOne(a => a.User)
+                .WithMany(u => u.Addresses)
+                .HasForeignKey(a => a.UserId);
         }
     }
 }

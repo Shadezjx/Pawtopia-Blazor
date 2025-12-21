@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Pawtopia.Data;
 
@@ -10,9 +11,11 @@ using Pawtopia.Data;
 namespace Pawtopia.Migrations
 {
     [DbContext(typeof(PawtopiaDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251221095920_3")]
+    partial class _3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.1");
@@ -50,24 +53,7 @@ namespace Pawtopia.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Addresses", (string)null);
-                });
-
-            modelBuilder.Entity("Pawtopia.Models.Category", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("NormalizedName")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Address");
                 });
 
             modelBuilder.Entity("Pawtopia.Models.Order", b =>
@@ -100,7 +86,7 @@ namespace Pawtopia.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Order");
                 });
 
             modelBuilder.Entity("Pawtopia.Models.OrderItem", b =>
@@ -123,76 +109,7 @@ namespace Pawtopia.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderItems", (string)null);
-                });
-
-            modelBuilder.Entity("Pawtopia.Models.Product", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("CategoryId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("TEXT");
-
-                    b.Property<long>("IsActive")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<double?>("Price")
-                        .HasColumnType("REAL");
-
-                    b.Property<long>("QuantityInStock")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("ThumbImageLink")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
-
-                    b.ToTable("Products", (string)null);
-                });
-
-            modelBuilder.Entity("Pawtopia.Models.ShoppingCart", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ShoppingCarts", (string)null);
-                });
-
-            modelBuilder.Entity("Pawtopia.Models.ShoppingCartItem", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ProductItemId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ShoppingCartId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ShoppingCartId");
-
-                    b.ToTable("ShoppingCartItems", (string)null);
+                    b.ToTable("OrderItem");
                 });
 
             modelBuilder.Entity("Pawtopia.Models.User", b =>
@@ -288,33 +205,6 @@ namespace Pawtopia.Migrations
                         .IsRequired();
 
                     b.Navigation("Order");
-                });
-
-            modelBuilder.Entity("Pawtopia.Models.Product", b =>
-                {
-                    b.HasOne("Pawtopia.Models.Category", "Category")
-                        .WithMany("Products")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("Pawtopia.Models.ShoppingCartItem", b =>
-                {
-                    b.HasOne("Pawtopia.Models.ShoppingCart", "ShoppingCart")
-                        .WithMany()
-                        .HasForeignKey("ShoppingCartId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ShoppingCart");
-                });
-
-            modelBuilder.Entity("Pawtopia.Models.Category", b =>
-                {
-                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("Pawtopia.Models.Order", b =>

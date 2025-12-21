@@ -6,28 +6,32 @@ using Pawtopia.Components;
 using Pawtopia.Components.Account;
 using Pawtopia.Data;
 using Pawtopia.Models;
+using Microsoft.AspNetCore.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// --- 1. ĐĂNG KÝ DỊCH VỤ (PHẢI nằm trước builder.Build) ---
+// --- 1. ĐĂNG KÝ DỊCH VỤ ---
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents()
     .AddAuthenticationStateSerialization();
 
-builder.Services.AddControllers(); // Cần thiết để chạy AuthController
+builder.Services.AddControllers();
 builder.Services.AddHttpClient();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
 
-// Di chuyển CORS lên đây (trước Build) để hết lỗi "Read-only"
+builder.Services.AddOpenApi();
+
+// Cấu hình CORS
 builder.Services.AddCors(o =>
 {
     o.AddPolicy("allow", p =>
-        p.AllowAnyOrigin()
+        p.WithOrigins("https://localhost:7216")
+         .AllowAnyMethod()
          .AllowAnyHeader()
-         .AllowAnyMethod());
+         .AllowCredentials());
 });
 
 builder.Services.AddAuthentication(options =>
@@ -35,35 +39,39 @@ builder.Services.AddAuthentication(options =>
     options.DefaultScheme = IdentityConstants.ApplicationScheme;
     options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
 })
-    .AddIdentityCookies();
+.AddIdentityCookies();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+    ?? "Data Source=Pawtopia.db"; // Backup nếu quên chưa config trong appsettings
 
 builder.Services.AddDbContext<PawtopiaDbContext>(options =>
     options.UseSqlite(connectionString));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+// HttpClient để Client gọi vào Server
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7216/") });
 
 builder.Services.AddIdentityCore<User>(options =>
 {
-    options.SignIn.RequireConfirmedAccount = true;
+    options.SignIn.RequireConfirmedAccount = false; // Tắt xác nhận mail để test cho nhanh
 })
-    .AddEntityFrameworkStores<PawtopiaDbContext>()
-    .AddSignInManager()
-    .AddDefaultTokenProviders();
+.AddEntityFrameworkStores<PawtopiaDbContext>()
+.AddSignInManager()
+.AddDefaultTokenProviders();
 
 builder.Services.AddSingleton<IEmailSender<User>, IdentityNoOpEmailSender>();
 
-// --- 2. DÒNG CHIA CẮT QUAN TRỌNG ---
+// --- 2. BUILD ---
 var app = builder.Build();
 
-// --- 3. CẤU HÌNH PIPELINE (Sau khi đã Build) ---
+// --- 3. CẤU HÌNH PIPELINE ---
 if (app.Environment.IsDevelopment())
 {
     app.UseWebAssemblyDebugging();
     app.UseMigrationsEndPoint();
+    // Kích hoạt giao diện test API
+    app.MapOpenApi();
 }
 else
 {
@@ -71,14 +79,16 @@ else
     app.UseHsts();
 }
 
-app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
 app.UseHttpsRedirection();
-
-app.UseCors("allow"); // Kích hoạt chính sách CORS
-app.UseStaticFiles(); // Cần thiết để nạp CSS (Sửa lỗi mất giao diện)
+app.UseStaticFiles(); // Đưa lên trên để load CSS/JS nhanh hơn
 app.UseAntiforgery();
 
-app.MapControllers(); // Kích hoạt API cho AuthController
+app.UseCors("allow");
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
 app.MapStaticAssets();
 
 app.MapRazorComponents<App>()
