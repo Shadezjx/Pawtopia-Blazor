@@ -1,0 +1,50 @@
+﻿@page "/register"
+@using Pawtopia.Client.DTOs
+@inject HttpClient Http
+@* Thêm dòng này để kích hoạt tương tác *@
+@rendermode InteractiveServer
+
+<EditForm Model="@registerModel" OnValidSubmit="HandleRegister" FormName="registerForm">
+    <div>
+        <InputText @bind-Value="registerModel.Name" placeholder="Name" class="form-control" />
+    </div>
+    <div>
+        <InputText @bind-Value="registerModel.Email" placeholder="Email" class="form-control" />
+    </div>
+    <div>
+        <InputText @bind-Value="registerModel.Password" type="password" placeholder="Password" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Register</button>
+</EditForm>
+
+@if (!string.IsNullOrEmpty(statusMessage))
+{
+    <p>@statusMessage</p>
+}
+
+@code {
+    private RegisterDto registerModel = new RegisterDto();
+    private string? statusMessage;
+
+    private async Task HandleRegister()
+    {
+        statusMessage = "Đang xử lý...";
+        try
+        {
+            var response = await Http.PostAsJsonAsync("api/auth/register", registerModel);
+
+            if (response.IsSuccessStatusCode)
+            {
+                statusMessage = "Đăng ký thành công!";
+            }
+            else
+            {
+                statusMessage = await response.Content.ReadAsStringAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            statusMessage = "Lỗi kết nối: " + ex.Message;
+        }
+    }
+}

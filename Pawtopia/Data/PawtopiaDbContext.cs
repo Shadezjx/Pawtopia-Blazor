@@ -1,76 +1,24 @@
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Pawtopia.Models;
 
 namespace Pawtopia.Data
 {
-    public class PawtopiaDbContext(DbContextOptions<PawtopiaDbContext> options)
-        : IdentityDbContext<
-            User,
-            IdentityRole,
-            string, // PasswordHash
-            IdentityUserClaim<string>,
-            IdentityUserRole<string>,
-            IdentityUserLogin<string>,
-            IdentityRoleClaim<string>,
-            IdentityUserToken<string>,
-            IdentityUserPasskey<string>
-        >(options)
+    // Kế thừa DbContext thường, không dùng IdentityDbContext nữa
+    public class PawtopiaDbContext : DbContext
     {
-        protected override void OnModelCreating(ModelBuilder builder)
+        public PawtopiaDbContext(DbContextOptions<PawtopiaDbContext> options)
+            : base(options)
         {
-            base.OnModelCreating(builder);
-
-            // ---
-            // Customize the ASP.NET Identity models
-            // ---
-
-            builder.Entity<User>().ToTable("Users");
-            builder.Entity<IdentityRole>().ToTable("Roles");
-            builder.Entity<IdentityUserClaim<string>>().ToTable("UserClaims");
-            builder.Entity<IdentityRoleClaim<string>>().ToTable("RoleClaims");
-            builder.Entity<IdentityUserLogin<string>>().ToTable("Logins");
-            builder.Entity<IdentityUserToken<string>>().ToTable("Tokens");
-            builder.Entity<IdentityUserPasskey<string>>().ToTable("Passkeys");
-
-            // join table: user can have many roles, role can have many users
-            builder.Entity<IdentityUserRole<string>>().ToTable("UserRoles");
-
-            // ---
-            // Additional application models
-            // ---
-
-            // Seed roles
-            var adminRoleId = "admin-role";
-            var customerRoleId = "customer-role";
-
-            builder.Entity<IdentityRole>().HasData(
-                new IdentityRole { 
-                    Id = adminRoleId,
-                    ConcurrencyStamp = adminRoleId,
-                    Name = "Admin", 
-                    NormalizedName = "ADMIN"
-                },
-                new IdentityRole
-                {
-                    Id = customerRoleId,
-                    ConcurrencyStamp = customerRoleId,
-                    Name = "Customer",
-                    NormalizedName = "Customer"
-                }
-            );
         }
 
-        public DbSet<Address> Addresses { get; set; } = null!;
-        public DbSet<Category> Categories { get; set; } = null!;
-        public DbSet<Product> Products { get; set; } = null!;
-        public DbSet<ProductItem> ProductItems { get; set; } = null!;
-        public DbSet<Order> Orders { get; set; } = null!;
-        public DbSet<OrderItem> OrderItems { get; set; } = null!;
-        public DbSet<ShoppingCart> ShoppingCarts { get; set; } = null!;
-        public DbSet<ShoppingCartItem> ShoppingCartItems { get; set; } = null!;
-        public DbSet<Variation> Variations { get; set; } = null!;
-        public DbSet<VariationOption> VariationOptions { get; set; } = null!;
+        // Khai báo bảng của riêng bạn ở đây
+        public DbSet<User> Users { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // Cấu hình bảng User của bạn (ví dụ đặt tên bảng là 'MyUsers')
+            modelBuilder.Entity<User>().ToTable("Users");
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }
